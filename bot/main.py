@@ -10,10 +10,6 @@ from bot.database import init_db
 from bot.handlers import admin, stats, user
 from bot.middlewares.admin import AdminMiddleware
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-)
 logger = logging.getLogger(__name__)
 
 
