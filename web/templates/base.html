@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Coaching Operators{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">
+                <span class="brand-icon">🎯</span>
+                <span class="brand-text">Coaching Operators</span>
+            </a>
+            <div class="navbar-menu">
+                <a href="/" class="nav-link">Главная</a>
+                {% if request.state.is_admin %}
+                <a href="/admin" class="nav-link nav-admin">Админ-панель</a>
+                {% endif %}
+                <div class="nav-auth">
+                    {% if request.state.user %}
+                    <span class="nav-user">
+                        {% if request.state.user.get('first_name') %}
+                            {{ request.state.user['first_name'] }}
+                        {% else %}
+                            {{ request.state.user.get('username', 'Пользователь') }}
+                        {% endif %}
+                    </span>
+                    <a href="/logout" class="nav-link nav-logout">Выйти</a>
+                    {% else %}
+                    <a href="/login" class="nav-link nav-login">Войти через Telegram</a>
+                    {% endif %}
+                </div>
+            </div>
+            <button class="navbar-toggle" onclick="toggleMenu()">☰</button>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <main class="container">
+        {% if error %}
+        <div class="alert alert-error">{{ error }}</div>
+        {% endif %}
+        {% if success %}
+        <div class="alert alert-success">{{ success }}</div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2024 Coaching Operators. Все материалы предназначены для внутреннего обучения.</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

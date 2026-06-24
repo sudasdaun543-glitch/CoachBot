@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}{{ material.title }} — Coaching Operators{% endblock %}
+{% block content %}
+<nav class="breadcrumb">
+    <a href="/">Главная</a>
+    <span>/</span>
+    <a href="/category/{{ material.category_id }}">Раздел</a>
+    <span>/</span>
+    <span>{{ material.title }}</span>
+</nav>
+
+<article class="material-article">
+    <h1>{{ material.title }}</h1>
+    <div class="material-content">
+        {% for paragraph in material.content.split('\n') %}
+            {% if paragraph.strip() %}
+                {% if paragraph.startswith('❗️') or paragraph.startswith('⚠️') %}
+                <div class="warning-block">{{ paragraph }}</div>
+                {% elif paragraph.startswith('http') %}
+                <p><a href="{{ paragraph }}" target="_blank" rel="noopener">{{ paragraph }}</a></p>
+                {% else %}
+                <p>{{ paragraph }}</p>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    {% if images %}
+    <section class="material-images">
+        <h2>Изображения</h2>
+        <div class="images-grid">
+            {% for img in images %}
+            <div class="image-card">
+                <img src="https://api.telegram.org/file/bot{{ telegram_bot_token }}/{{ img.file_id }}"
+                     alt="{{ img.caption or 'Изображение' }}"
+                     onclick="openImage(this.src)"
+                     loading="lazy">
+                {% if img.caption %}
+                <p class="image-caption">{{ img.caption }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <div class="material-nav">
+        <a href="/category/{{ material.category_id }}" class="btn btn-secondary">← К списку</a>
+        <a href="/" class="btn btn-primary">На главную</a>
+    </div>
+</article>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function openImage(src) {
+    const overlay = document.createElement('div');
+    overlay.className = 'image-overlay';
+    overlay.innerHTML = `<img src="${src}" onclick="this.parentElement.remove()">`;
+    overlay.onclick = () => overlay.remove();
+    document.body.appendChild(overlay);
+}
+</script>
+{% endblock %}

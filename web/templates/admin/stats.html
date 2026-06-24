@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Статистика — Coaching Operators{% endblock %}
+{% block content %}
+<section class="admin-header">
+    <h1>📊 Статистика</h1>
+    <a href="/admin" class="btn btn-secondary">← Назад</a>
+</section>
+
+<section class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-value">{{ total_users }}</div>
+        <div class="stat-label">Всего пользователей</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">👑</div>
+        <div class="stat-value">{{ total_admins }}</div>
+        <div class="stat-label">Администраторов</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📂</div>
+        <div class="stat-value">{{ total_cats }}</div>
+        <div class="stat-label">Разделов</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📄</div>
+        <div class="stat-value">{{ total_mats }}</div>
+        <div class="stat-label">Материалов</div>
+    </div>
+    <div class="stat-card stat-card-large">
+        <div class="stat-icon">👁</div>
+        <div class="stat-value">{{ total_views }}</div>
+        <div class="stat-label">Всего просмотров</div>
+    </div>
+</section>
+
+<section class="list-section">
+    <h2>Просмотры по разделам</h2>
+    {% for cat in cat_stats %}
+    <div class="list-item">
+        <div class="list-item-body">
+            <h3>{{ cat.title }}</h3>
+        </div>
+        <div class="list-item-actions">
+            <span class="stat-badge">{{ cat.views }} просмотров</span>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>Нет данных.</p>
+    </div>
+    {% endfor %}
+</section>
+{% endblock %}

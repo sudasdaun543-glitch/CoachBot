@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Управление разделами — Coaching Operators{% endblock %}
+{% block content %}
+<section class="admin-header">
+    <h1>📂 Управление разделами</h1>
+    <a href="/admin" class="btn btn-secondary">← Назад</a>
+</section>
+
+<!-- Форма создания -->
+<section class="form-section">
+    <h2>Создать новый раздел</h2>
+    <form action="/admin/categories/create" method="post" class="admin-form">
+        <div class="form-group">
+            <label for="title">Название раздела</label>
+            <input type="text" id="title" name="title" required placeholder="Например: 📹 OBS">
+        </div>
+        <div class="form-group">
+            <label for="description">Описание (необязательно)</label>
+            <textarea id="description" name="description" rows="2" placeholder="Краткое описание раздела"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">➕ Создать</button>
+    </form>
+</section>
+
+<!-- Список разделов -->
+<section class="list-section">
+    <h2>Существующие разделы</h2>
+    {% for cat in categories %}
+    <div class="list-item" data-cat-id="{{ cat.id }}" data-cat-title="{{ cat.title }}" data-cat-desc="{{ cat.description or '' }}">
+        <div class="list-item-body">
+            <h3>{{ cat.title }}</h3>
+            <p>{{ cat.description or 'Нет описания' }}</p>
+            <small>Позиция: {{ cat.position }} | Материалов: {{ cat.materials|length }}</small>
+        </div>
+        <div class="list-item-actions">
+            <button class="btn btn-small" onclick="editCategory(this)">✏️</button>
+            <form action="/admin/categories/{{ cat.id }}/delete" method="post" style="display:inline" onsubmit="return confirm('Удалить раздел «{{ cat.title }}»? Все материалы будут удалены!')">
+                <button type="submit" class="btn btn-small btn-danger">🗑️</button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>Пока нет разделов. Создайте первый!</p>
+    </div>
+    {% endfor %}
+</section>
+
+<!-- Модальное окно редактирования -->
+<div id="editModal" class="modal" style="display:none">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeEditModal()">&times;</span>
+        <h2>Редактировать раздел</h2>
+        <form id="editForm" method="post" class="admin-form">
+            <div class="form-group">
+                <label for="edit_title">Название раздела</label>
+                <input type="text" id="edit_title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="edit_description">Описание</label>
+                <textarea id="edit_description" name="description" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">💾 Сохранить</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function editCategory(btn) {
+    const item = btn.closest('.list-item');
+    const id = item.dataset.catId;
+    const title = item.dataset.catTitle;
+    const desc = item.dataset.catDesc;
+
+    document.getElementById('edit_title').value = title;
+    document.getElementById('edit_description').value = desc;
+    document.getElementById('editForm').action = '/admin/categories/' + id + '/edit';
+    document.getElementById('editModal').style.display = 'flex';
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('editModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}

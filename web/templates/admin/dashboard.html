@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Админ-панель — Coaching Operators{% endblock %}
+{% block content %}
+<section class="admin-header">
+    <h1>👑 Админ-панель</h1>
+    <p>Добро пожаловать, {{ request.state.user.get('first_name', 'Администратор') }}!</p>
+</section>
+
+<section class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-value">{{ total_users }}</div>
+        <div class="stat-label">Пользователей</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📂</div>
+        <div class="stat-value">{{ total_cats }}</div>
+        <div class="stat-label">Разделов</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📄</div>
+        <div class="stat-value">{{ total_mats }}</div>
+        <div class="stat-label">Материалов</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">👁</div>
+        <div class="stat-value">{{ total_views }}</div>
+        <div class="stat-label">Просмотров</div>
+    </div>
+</section>
+
+<section class="admin-actions">
+    <h2>Управление</h2>
+    <div class="actions-grid">
+        <a href="/admin/categories" class="action-card">
+            <span class="action-icon">📂</span>
+            <span class="action-title">Разделы</span>
+            <span class="action-desc">Создание и редактирование разделов</span>
+        </a>
+        <a href="/admin/materials" class="action-card">
+            <span class="action-icon">📄</span>
+            <span class="action-title">Материалы</span>
+            <span class="action-desc">Управление материалами и изображениями</span>
+        </a>
+        <a href="/admin/stats" class="action-card">
+            <span class="action-icon">📊</span>
+            <span class="action-title">Статистика</span>
+            <span class="action-desc">Просмотр статистики использования</span>
+        </a>
+    </div>
+</section>
+{% endblock %}

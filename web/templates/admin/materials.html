@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Управление материалами — Coaching Operators{% endblock %}
+{% block content %}
+<section class="admin-header">
+    <h1>📄 Управление материалами</h1>
+    <a href="/admin" class="btn btn-secondary">← Назад</a>
+</section>
+
+<!-- Форма создания -->
+<section class="form-section">
+    <h2>Создать новый материал</h2>
+    <form action="/admin/materials/create" method="post" class="admin-form">
+        <div class="form-group">
+            <label for="category_id">Раздел</label>
+            <select id="category_id" name="category_id" required>
+                <option value="">— Выберите раздел —</option>
+                {% for cat in categories %}
+                <option value="{{ cat.id }}">{{ cat.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="title">Название материала</label>
+            <input type="text" id="title" name="title" required placeholder="Например: Настройка OBS Studio">
+        </div>
+        <div class="form-group">
+            <label for="content">Текст материала</label>
+            <textarea id="content" name="content" rows="10" placeholder="Полный текст инструкции..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">➕ Создать</button>
+    </form>
+</section>
+
+<!-- Список материалов -->
+<section class="list-section">
+    <h2>Существующие материалы</h2>
+    {% for mat in materials %}
+    <div class="list-item">
+        <div class="list-item-body">
+            <h3>{{ mat.title }}</h3>
+            <p>{{ mat.content[:150] }}{% if mat.content|length > 150 %}...{% endif %}</p>
+            <small>
+                Раздел: 
+                {% for cat in categories %}
+                    {% if cat.id == mat.category_id %}{{ cat.title }}{% endif %}
+                {% endfor %}
+                | Позиция: {{ mat.position }}
+            </small>
+        </div>
+        <div class="list-item-actions">
+            <a href="/admin/materials/{{ mat.id }}/images" class="btn btn-small">🖼</a>
+            <button class="btn btn-small" onclick="editMaterial('{{ mat.id }}', '{{ mat.title }}', `{{ mat.content|escapejs }}`)">✏️</button>
+            <form action="/admin/materials/{{ mat.id }}/delete" method="post" style="display:inline" onsubmit="return confirm('Удалить материал «{{ mat.title }}»?')">
+                <button type="submit" class="btn btn-small btn-danger">🗑️</button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>Пока нет материалов. Создайте первый!</p>
+    </div>
+    {% endfor %}
+</section>
+
+<!-- Модальное окно редактирования -->
+<div id="editModal" class="modal" style="display:none">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeEditModal()">&times;</span>
+        <h2>Редактировать материал</h2>
+        <form id="editForm" method="post" class="admin-form">
+            <div class="form-group">
+                <label for="edit_title">Название материала</label>
+                <input type="text" id="edit_title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="edit_content">Текст материала</label>
+                <textarea id="edit_content" name="content" rows="10"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">💾 Сохранить</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function editMaterial(id, title, content) {
+    document.getElementById('edit_title').value = title;
+    document.getElementById('edit_content').value = content;
+    document.getElementById('editForm').action = '/admin/materials/' + id + '/edit';
+    document.getElementById('editModal').style.display = 'flex';
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('editModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Изображения — {{ material.title }}{% endblock %}
+{% block content %}
+<section class="admin-header">
+    <h1>🖼 Изображения: {{ material.title }}</h1>
+    <a href="/admin/materials" class="btn btn-secondary">← Назад</a>
+</section>
+
+<!-- Форма добавления -->
+<section class="form-section">
+    <h2>Добавить изображение</h2>
+    <p class="hint">Введите Telegram file_id изображения. Чтобы получить file_id, отправьте фото боту и найдите file_id в логах.</p>
+    <form action="/admin/materials/{{ material.id }}/images/add" method="post" class="admin-form">
+        <div class="form-group">
+            <label for="file_id">Telegram File ID</label>
+            <input type="text" id="file_id" name="file_id" required placeholder="AgACAgIAAxkB...">
+        </div>
+        <div class="form-group">
+            <label for="caption">Подпись (необязательно)</label>
+            <input type="text" id="caption" name="caption" placeholder="Описание изображения">
+        </div>
+        <button type="submit" class="btn btn-primary">➕ Добавить</button>
+    </form>
+</section>
+
+<!-- Список изображений -->
+<section class="list-section">
+    <h2>Изображения ({{ images|length }})</h2>
+    {% for img in images %}
+    <div class="list-item">
+        <div class="list-item-body">
+            <p><strong>#{{ loop.index }}</strong> — ID: {{ img.file_id[:30] }}...</p>
+            {% if img.caption %}
+            <p>Подпись: {{ img.caption }}</p>
+            {% endif %}
+            <small>Позиция: {{ img.position }}</small>
+        </div>
+        <div class="list-item-actions">
+            <form action="/admin/images/{{ img.id }}/delete" method="post" style="display:inline" onsubmit="return confirm('Удалить изображение?')">
+                <button type="submit" class="btn btn-small btn-danger">🗑️</button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>У этого материала пока нет изображений.</p>
+    </div>
+    {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Coaching Operators — Главная{% endblock %}
+{% block content %}
+<section class="hero">
+    <h1>📚 Мануалы для операторов</h1>
+    <p>Все необходимые инструкции и материалы для работы в одном месте</p>
+</section>
+
+<section class="categories-grid">
+    {% for cat in categories %}
+    <a href="/category/{{ cat.id }}" class="category-card">
+        <div class="category-card-header">
+            <span class="category-icon">{{ cat.title.split(' ')[0] }}</span>
+            <h2>{{ cat.title }}</h2>
+        </div>
+        <p class="category-desc">{{ cat.description or 'Нет описания' }}</p>
+        <span class="category-link">Перейти →</span>
+    </a>
+    {% else %}
+    <div class="empty-state">
+        <p>Пока нет разделов. Обратитесь к администратору.</p>
+    </div>
+    {% endfor %}
+</section>
+{% endblock %}
